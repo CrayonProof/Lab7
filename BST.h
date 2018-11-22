@@ -1,5 +1,6 @@
 #include "Node.h"
 #include "BSTInterface.h"
+#include <iostream>
 using namespace std;
 
 class BST :
@@ -22,31 +23,50 @@ class BST :
     	
     	bool addUnderParent(Node * last, int data)
     	{
-    	    if(last->data == data)
+    	    cout << "addUnderParentCall" << endl;
+    	    
+    	    if (last != NULL)
     	    {
+    	        cout << last->data << endl;
+    	    }
+    	    
+    	    if (last == NULL)
+    	    {
+    	        cout << "last == NULL" << endl;
+    	        return false;
+    	    }
+    	    else if (last->data == data)
+    	    {
+    	        cout << "last->data == data" << endl;
     	        return false;
     	    }
     	    else if(data < last->data)
 	        {
+	            cout << "data < last->data" << endl;
 	            if(last->leftChild == NULL)
         	    {
+        	        cout << "last->leftChild == NULL" << endl;
         	        last->leftChild = new Node(data);
 	                return true;
         	    }
         	    else
         	    {
+        	        cout << "recursive call to left Child" << endl;
         	        return addUnderParent(last->leftChild, data);
         	    }
 	        }
 	        else if(data > last->data)
 	        {
+	            cout << "data > last->data" << endl;
 	            if(last->rightChild == NULL)
         	    {
+        	        cout << "last->rightChild == NULL" << endl;
         	        last->rightChild = new Node(data);
 	                return true;
         	    }
         	    else
         	    {
+        	        cout << "recursive call to right Child" << endl;
         	        return addUnderParent(last->rightChild, data);
         	    }
 	        }
@@ -61,7 +81,42 @@ class BST :
     	*/
     	bool add(int data)
     	{
-    	    return addUnderParent(rootNode, data);
+    	    if (rootNode == NULL)
+    	    {
+    	        rootNode = new Node(data);
+    	        return true;
+    	    }
+    	    else
+    	    {
+    	        Node * lookingAt = rootNode;
+    	        while (true)
+    	        {
+    	            if (lookingAt->data == data)
+    	            {
+    	                return false;
+    	            }
+    	            else if (lookingAt->data > data)
+    	            {
+    	                if (lookingAt->leftChild == NULL)
+    	                {
+    	                    lookingAt->leftChild = new Node(data);
+    	                    cout << "added node at left wtih data: " << lookingAt->leftChild->data << endl;
+    	                    return true;
+    	                }
+    	                lookingAt = lookingAt->leftChild;
+    	            }
+    	            else if (lookingAt->data < data)
+    	            {
+    	                if (lookingAt->rightChild == NULL)
+    	                {
+    	                    lookingAt->rightChild = new Node(data);
+    	                    cout << "added node at right wtih data: " << lookingAt->rightChild->data << endl;
+    	                    return true;
+    	                }
+    	                lookingAt = lookingAt->rightChild;
+    	            }
+    	        }
+    	    }
     	}
     
         bool doTheRemove(Node * parent, Node * deleteNode)

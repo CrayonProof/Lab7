@@ -1,13 +1,20 @@
 #include "NodeInterface.h"
+#include <iostream>
 using namespace std;
 
 class Node :
     public NodeInterface
 {
     public :
-        Node() {}
+        Node()
+        {
+            data = -314159;
+            leftChild = NULL;
+            rightChild = NULL;
+        }
         Node(int data) 
         {
+            //cout << "new node created with data = " << data << " and no children" << endl;
             this->data = data;
             leftChild = NULL;
             rightChild = NULL;
@@ -37,7 +44,7 @@ class Node :
     	*/
     	Node * getLeftChild() const
     	{
-    	    return rightChild;
+    	    return leftChild;
     	}
 
         /*
@@ -47,7 +54,7 @@ class Node :
     	*/
     	Node * getRightChild() const
     	{
-    	    return leftChild;
+    	    return rightChild;
     	}
     	
     	bool setData(int data)
