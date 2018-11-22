@@ -6,6 +6,18 @@ class Node :
 {
     public :
         Node() {}
+        Node(int data) 
+        {
+            this->data = data;
+            leftChild = NULL;
+            rightChild = NULL;
+        }
+        Node(int data, Node * leftChild, Node * rightChild) 
+        {
+            this->data = data;
+            this->rightChild = rightChild;
+            this->leftChild = leftChild;
+        }
     	~Node() {}
     
         /*
@@ -15,7 +27,7 @@ class Node :
     	*/
     	int getData() const
     	{
-    	    
+    	    return data;
     	}
 
         /*
@@ -23,9 +35,9 @@ class Node :
     	*
     	* @return the left child of this node or null if it doesn't have one.
     	*/
-    	NodeInterface * getLeftChild() const
+    	Node * getLeftChild() const
     	{
-    	    
+    	    return rightChild;
     	}
 
         /*
@@ -33,12 +45,31 @@ class Node :
     	*
     	* @return the right child of this node or null if it doesn't have one.
     	*/
-    	NodeInterface * getRightChild() const
+    	Node * getRightChild() const
     	{
-    	    
+    	    return leftChild;
+    	}
+    	
+    	bool setData(int data)
+    	{
+    	    this->data = data;
+    	    return true;
+    	}
+    	
+    	bool setLeftChild(Node * newLeftChild)
+    	{
+    	    leftChild = newLeftChild;
+    	    return true;
+    	}
+    	
+    	bool setRightChild(Node * newRightChild)
+    	{
+    	    rightChild = newRightChild;
+    	    return true;
     	}
     private :
-        int thisGuy;
+        int data;
         Node * rightChild;
         Node * leftChild;
+        friend class BST;
 };
