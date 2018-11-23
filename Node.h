@@ -25,7 +25,13 @@ class Node :
             this->rightChild = rightChild;
             this->leftChild = leftChild;
         }
-    	~Node() {}
+    	~Node()
+    	{
+    	    //delete leftChild;
+    	    //delete rightChild;
+    	    //leftChild = NULL;
+    	    //rightChild = NULL;
+    	}
     
         /*
     	* Returns the data that is stored in this node

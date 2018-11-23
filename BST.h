@@ -8,8 +8,14 @@ class BST :
 {
     public :
     
-        BST() {}
-    	~BST() {}
+        BST()
+        {
+            rootNode = NULL;
+        }
+    	~BST()
+    	{
+    	    clear();
+    	}
     	
     	/*
     	* Returns the root node for this tree
@@ -119,41 +125,160 @@ class BST :
     	    }
     	}
     
-        bool doTheRemove(Node * parent, Node * deleteNode)
-        {
-            
-        }
     
-        bool findAndRemove(Node * last, int data)
+    int maxValueAtN(Node* n)
+{
+	if(n==NULL)
+		return -1;
+	int value= n->getData();
+	Node* left=n->leftChild;
+	if(left!=NULL)
+	{
+		int leftValue=maxValueAtN(left);
+		if(leftValue>value)
+		{
+			value=leftValue;
+		}
+	}
+	Node* right=n->rightChild;
+	if(right!=NULL)
+	{
+		int rightValue = maxValueAtN(right);
+		if(rightValue>value)
+		{
+			value=rightValue;
+		}
+	}
+	return value;
+}
+    
+    
+        bool removeItemAt(Node*& n,int data)
+{
+	if(n==NULL)
+	{
+		//cout<<"empty tree"<<endl;
+		return false;
+	}
+	if(data==n->data)
+	{
+		if(n->leftChild==NULL&&n->rightChild!=NULL)
+		{
+			//cout<<"single right child"<<endl;
+			Node* temp=n;
+			n=n->rightChild;
+			delete temp;
+			return true;
+		}
+		else if(n->rightChild==NULL&&n->leftChild!=NULL)
+		{
+			//cout<<"single left child"<<endl;
+			Node* temp=n;
+			n=n->leftChild;
+			delete temp;
+			return true;
+		}
+		else if(n->rightChild==NULL&&n->leftChild==NULL)
+		{
+			Node* temp=n;
+			n=NULL;
+			delete temp;
+			return true;
+
+		}
+		else
+		{
+			n->data=maxValueAtN(n->leftChild);//*max value in left*
+			removeItemAt(n->leftChild,n->data);
+		}
+	}
+	else if(data < n->data)
+	{
+		removeItemAt(n->leftChild,data);
+	}
+	else 
+		removeItemAt(n->rightChild,data);
+}
+    
+        bool findAndRemove(Node * &localRoot, int data)
         {
-            if (last->leftChild == NULL && last->rightChild == NULL)
+            cout << "recursive call to findAndRemove" << endl;
+            if (localRoot == NULL)
             {
                 return false;
             }
-            else if (data < last->data)
+            else if (data < localRoot->data)
             {
-                if (last->leftChild->data == data)
-    	        {
-    	            doTheRemove(last, last->leftChild);
-    	            return true;
-    	        }
-    	        else
-    	        {
-    	            return findAndRemove(last->leftChild, data);
-    	        }
+                return findAndRemove(localRoot->leftChild, data);
             }
-            else if (data > last->data)
+            else if (data > localRoot->data)
             {
-                if (last->rightChild->data == data)
-        	    {
-        	        doTheRemove(last, last->rightChild);
-        	        return true;
-        	    }
-        	    else
-    	        {
-    	            return findAndRemove(last->rightChild, data);
-    	        }
+                return findAndRemove(localRoot->rightChild, data);
             }
+            else
+            {
+                
+                if (localRoot->leftChild == NULL && localRoot->rightChild == NULL)
+                {
+                    cout << "ONE" << endl;
+                    Node * toRemove = localRoot;
+                    
+                    localRoot == NULL;
+                    
+                    delete toRemove;
+                    return true;
+                }
+                else if (localRoot->rightChild != NULL)
+                {
+                    cout << "TWO" << endl;
+                    Node * toRemove = localRoot;
+                    
+                    localRoot == localRoot->rightChild;
+                    
+                    //delete toRemove;
+                    return true;
+                }
+                else if (localRoot->leftChild != NULL)
+                {
+                    cout << "THREE" << endl;
+                    Node * toRemove = localRoot;
+                    
+                    localRoot == localRoot->leftChild;
+                    
+                    delete toRemove;
+                    return true;
+                }
+                else
+                {
+                    cout << "FOUR" << endl;
+                    if (localRoot->leftChild->rightChild == NULL)
+                    {
+                        Node * toRemove = localRoot;
+                        
+                        localRoot = localRoot->leftChild;
+                        
+                        delete toRemove;
+                        return true;
+                    }
+                    else
+                    {
+                        Node * toRemove = localRoot;
+                        Node * inordPred = localRoot->leftChild;
+                        
+                        while(inordPred->rightChild != NULL)
+                        {
+                            inordPred = inordPred->rightChild;
+                        }
+                        
+                        localRoot->data = inordPred->data;
+                        inordPred = inordPred->leftChild;
+                        
+                        delete toRemove;
+                        return true;
+                    }
+                }
+            }
+            
         }
     
     	/*
@@ -164,15 +289,38 @@ class BST :
     	*/
     	bool remove(int data)
     	{
-    	    return (findAndRemove(rootNode, data));
+    	    cout << "remove()" << endl;
+    	    return findAndRemove(rootNode, data);
     	}
+    
+        void travClear(Node * node)
+        {
+            cout << "travClear" << endl;
+            
+            if(node->leftChild != NULL)
+                travClear(node->leftChild);
+            if(node->rightChild != NULL)
+                travClear(node->rightChild);
+            delete node;
+        }
     
     	/*
     	* Removes all nodes from the tree, resulting in an empty tree.
     	*/
     	void clear()
     	{
+    	    /*
+    	    if (rootNode != NULL)
+    	    {
+    	        travClear(rootNode);
+    	        rootNode = NULL;
+    	    }
+    	    */
     	    
+    	    while (rootNode != NULL)
+    	    {
+    	        remove(rootNode->data);
+    	    }
     	}
 	private :
 	    Node * rootNode;
