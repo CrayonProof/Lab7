@@ -27,58 +27,6 @@ class BST :
     	    return rootNode;
     	}
     	
-    	bool addUnderParent(Node * last, int data)
-    	{
-    	    cout << "addUnderParentCall" << endl;
-    	    
-    	    if (last != NULL)
-    	    {
-    	        cout << last->data << endl;
-    	    }
-    	    
-    	    if (last == NULL)
-    	    {
-    	        cout << "last == NULL" << endl;
-    	        return false;
-    	    }
-    	    else if (last->data == data)
-    	    {
-    	        cout << "last->data == data" << endl;
-    	        return false;
-    	    }
-    	    else if(data < last->data)
-	        {
-	            cout << "data < last->data" << endl;
-	            if(last->leftChild == NULL)
-        	    {
-        	        cout << "last->leftChild == NULL" << endl;
-        	        last->leftChild = new Node(data);
-	                return true;
-        	    }
-        	    else
-        	    {
-        	        cout << "recursive call to left Child" << endl;
-        	        return addUnderParent(last->leftChild, data);
-        	    }
-	        }
-	        else if(data > last->data)
-	        {
-	            cout << "data > last->data" << endl;
-	            if(last->rightChild == NULL)
-        	    {
-        	        cout << "last->rightChild == NULL" << endl;
-        	        last->rightChild = new Node(data);
-	                return true;
-        	    }
-        	    else
-        	    {
-        	        cout << "recursive call to right Child" << endl;
-        	        return addUnderParent(last->rightChild, data);
-        	    }
-	        }
-    	    
-    	}
-    	
     	/*
     	* Attempts to add the given int to the BST tree
     	*
@@ -90,6 +38,7 @@ class BST :
     	    if (rootNode == NULL)
     	    {
     	        rootNode = new Node(data);
+    	        cout << "added node at root wtih data: " << rootNode->data << endl;
     	        return true;
     	    }
     	    else
@@ -125,97 +74,24 @@ class BST :
     	    }
     	}
     
-    
-    int maxValueAtN(Node* n)
-{
-	if(n==NULL)
-		return -1;
-	int value= n->getData();
-	Node* left=n->leftChild;
-	if(left!=NULL)
-	{
-		int leftValue=maxValueAtN(left);
-		if(leftValue>value)
-		{
-			value=leftValue;
-		}
-	}
-	Node* right=n->rightChild;
-	if(right!=NULL)
-	{
-		int rightValue = maxValueAtN(right);
-		if(rightValue>value)
-		{
-			value=rightValue;
-		}
-	}
-	return value;
-}
-    
-    
-        bool removeItemAt(Node*& n,int data)
-{
-	if(n==NULL)
-	{
-		//cout<<"empty tree"<<endl;
-		return false;
-	}
-	if(data==n->data)
-	{
-		if(n->leftChild==NULL&&n->rightChild!=NULL)
-		{
-			//cout<<"single right child"<<endl;
-			Node* temp=n;
-			n=n->rightChild;
-			delete temp;
-			return true;
-		}
-		else if(n->rightChild==NULL&&n->leftChild!=NULL)
-		{
-			//cout<<"single left child"<<endl;
-			Node* temp=n;
-			n=n->leftChild;
-			delete temp;
-			return true;
-		}
-		else if(n->rightChild==NULL&&n->leftChild==NULL)
-		{
-			Node* temp=n;
-			n=NULL;
-			delete temp;
-			return true;
-
-		}
-		else
-		{
-			n->data=maxValueAtN(n->leftChild);//*max value in left*
-			removeItemAt(n->leftChild,n->data);
-		}
-	}
-	else if(data < n->data)
-	{
-		removeItemAt(n->leftChild,data);
-	}
-	else 
-		removeItemAt(n->rightChild,data);
-}
-    
         bool findAndRemove(Node * &localRoot, int data)
         {
-            cout << "recursive call to findAndRemove" << endl;
+            cout << "call to findAndRemove(" << data << ")" << endl;
             if (localRoot == NULL)
             {
                 return false;
             }
             else if (data < localRoot->data)
             {
+                cout << "recCall ONE" << endl;
                 return findAndRemove(localRoot->leftChild, data);
             }
             else if (data > localRoot->data)
             {
+                cout << "recCall TWO" << endl;
                 return findAndRemove(localRoot->rightChild, data);
             }
-            else
+            else if (data == localRoot->data)
             {
                 
                 if (localRoot->leftChild == NULL && localRoot->rightChild == NULL)
@@ -223,36 +99,36 @@ class BST :
                     cout << "ONE" << endl;
                     Node * toRemove = localRoot;
                     
-                    localRoot == NULL;
+                    localRoot = NULL;
                     
                     delete toRemove;
                     return true;
                 }
-                else if (localRoot->rightChild != NULL)
+                else if (localRoot->rightChild != NULL && localRoot->leftChild == NULL)
                 {
                     cout << "TWO" << endl;
                     Node * toRemove = localRoot;
                     
-                    localRoot == localRoot->rightChild;
-                    
-                    //delete toRemove;
-                    return true;
-                }
-                else if (localRoot->leftChild != NULL)
-                {
-                    cout << "THREE" << endl;
-                    Node * toRemove = localRoot;
-                    
-                    localRoot == localRoot->leftChild;
+                    localRoot = localRoot->rightChild;
                     
                     delete toRemove;
                     return true;
                 }
-                else
+                else if (localRoot->leftChild != NULL && localRoot->rightChild == NULL)
                 {
-                    cout << "FOUR" << endl;
-                    if (localRoot->leftChild->rightChild == NULL)
+                    cout << "THREE" << endl;
+                    Node * toRemove = localRoot;
+                    
+                    localRoot = localRoot->leftChild;
+                    
+                    delete toRemove;
+                    return true;
+                }
+                else if (localRoot->leftChild != NULL && localRoot->rightChild != NULL)
+                {
+                    if (false) //(localRoot->leftChild->rightChild == NULL)
                     {
+                        cout << "FOUR LR NULL: " << data << endl;
                         Node * toRemove = localRoot;
                         
                         localRoot = localRoot->leftChild;
@@ -262,6 +138,7 @@ class BST :
                     }
                     else
                     {
+                        cout << "FOUR INORD PRED: " << data << endl;
                         Node * toRemove = localRoot;
                         Node * inordPred = localRoot->leftChild;
                         
@@ -271,9 +148,7 @@ class BST :
                         }
                         
                         localRoot->data = inordPred->data;
-                        inordPred = inordPred->leftChild;
-                        
-                        delete toRemove;
+                        findAndRemove(localRoot->leftChild, localRoot->data);
                         return true;
                     }
                 }
@@ -290,7 +165,7 @@ class BST :
     	bool remove(int data)
     	{
     	    cout << "remove()" << endl;
-    	    return findAndRemove(rootNode, data);
+    	        return findAndRemove(rootNode, data);
     	}
     
         void travClear(Node * node)
@@ -309,6 +184,7 @@ class BST :
     	*/
     	void clear()
     	{
+    	    cout << "clear()" << endl;
     	    /*
     	    if (rootNode != NULL)
     	    {
